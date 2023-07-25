@@ -66,7 +66,7 @@ $$
 
 ### 2.2. Non-Saturating GAN (NS-GAN, prevent gradient saturation)
 
-When $$G$$ is poor, especially in the early step of training, $$D$$ can easily reject data from $$z$$. In this case, $$ log(1-D(x)) $$ saturates ($$ \nabla{V(D,G)} \approx 0 $$), because what ever $$z$$ is, $$ D(G(z)) \approx 0 $$.
+When $$G$$ is poor, especially in the early step of training, $$D$$ can easily reject data from $$z$$. In this case, $$ log(1-D(x)) $$ saturates ($$ \nabla{V(D,G)} \approx 0 $$), because whatever $$z$$ is, $$ D(G(z)) \approx 0 $$.
 
 Therefore NS-GAN flips the labels when the generator is being trained.
 
@@ -138,7 +138,7 @@ Therefore the difference of the optimal $$C(G)$$ with an arbitrary $$p_g$$ and t
 
 $$
 \begin{aligned}
-  C(G) - (\mathbb{E}_{x{\sim}p_{data}}[-log2] + \mathbb{E}_{x{\sim}p_g}[-log2)])
+  C(G) - (\mathbb{E}_{x{\sim}p_{data}}[-log2] + \mathbb{E}_{x{\sim}p_g}[-log2])
   &= \int_{x}p_{data}log\frac{p_{data}}{p_{data}+p_g}dx + \int_{x}p_glog\frac{p_g}{p_{data}+p_g}dx -(-log4) \\
   &= - \int_{x}p_{data}log\frac{p_{data}+p_g}{2p_{data}}dx - \int_{x}p_glog\frac{p_{data}+p_g}{2p_g}dx \\
   &= KL(p_{data} \parallel \frac{p_{data}+p_g}{2}) + KL(p_g \parallel \frac{p_{data}+p_g}{2}) \\ 
