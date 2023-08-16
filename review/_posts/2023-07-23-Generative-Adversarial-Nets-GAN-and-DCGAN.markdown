@@ -9,7 +9,7 @@ As of 2020, the most popular approaches to generative modeling are probably GANs
 In this review, we will look at the original GAN and one of its variants, DCGAN.
 
 
-## 1. Notations
+## 1. Notation
 
 - Probability density functions
 
@@ -66,7 +66,7 @@ $$
 
 ### 2.2. Non-Saturating GAN (NS-GAN, prevent gradient saturation)
 
-When $$G$$ is poor, especially in the early step of training, $$D$$ can easily reject data from $$z$$. In this case, $$ log(1-D(x)) $$ saturates ($$ \nabla{V(D,G)} \approx 0 $$), because whatever $$z$$ is, $$ D(G(z)) \approx 0 $$.
+When $$G$$ is poor, especially in the early step of training, $$D$$ can easily reject data from $$z$$. In this case, $$ log(1-D(x)) $$ saturates, because whatever $$z$$ is, $$ D(G(z)) \approx 0 $$.
 
 Therefore NS-GAN flips the labels when the generator is being trained.
 
