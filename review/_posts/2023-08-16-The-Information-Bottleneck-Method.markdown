@@ -193,7 +193,7 @@ $$
 \end{aligned}
 $$
 
-At $$ \beta=0 $$, $$ X $$ shrinked into a single point, while as $$ \beta \rightarrow \infty $$ we got arbitrarily tirivial quantization with full of redundancy,
+At $$ \beta=0 $$, $$ X $$ shrinked into a single point, while as $$ \beta \rightarrow \infty $$ we got arbitrarily trivial quantization with full of redundancy,
 Interestingly, if there are **sufficient statistics**, it is possible to preserve almost all the meaningful information at finite $$ \beta $$ with a significant compression of the original data.
 
 
