@@ -13,7 +13,7 @@ In this regard, the variational principle in this paper provides a framework for
 
 Many of the sentences in this review were written by taking the contents of the original.
 
-Besides some contents of the paper were skipped, because my knowledge was not sufficient to understand them and they were too complicated for my purpose of looking at the mainstream of the IB framework.
+Besides some contents of the papers were skipped, because my knowledge was not sufficient to understand them and they were too complicated for my purpose of looking at the mainstream of the IB framework.
 
 
 # Main
