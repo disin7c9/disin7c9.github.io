@@ -42,7 +42,7 @@ SNR is the log difference between the normalized mean and the standard deviation
 
 -- $$ Y $$: desired output variable relevant to $$ X $$
 
--- $$ T_i $$: the compressed representative of $$ X $$ through $$i$$th hidden layer of the DNN
+-- $$ T_i $$: the compressed representative of $$ X $$ through $$i^th$$ hidden layer of the DNN
 
 -- $$ P(T \vert X) $$: encoder distribution
 
@@ -238,6 +238,6 @@ With larger training samples more details on $$X$$ become relevant for $$Y$$, wh
 
 
 
-# Reviews of the Mainstream of Information Bottleneck Framework
+## Reviews of the Mainstream of the Information Bottleneck Framework
 
-[1. The Information Bottleneck Method](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method/)
+[The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
