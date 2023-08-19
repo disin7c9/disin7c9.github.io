@@ -16,7 +16,7 @@ As a follow-up study, in this paper, Schwartz-Ziv and Tishby present the followi
 
 2. The phase shift from Empirical Risk Minimization to representation compression is begin when the training loss is becomes small and the Stochastic Gradient Decent (SGD) epochs changes from a fast drift to smaller training loss into a stochastic relaxaion(=random diffusion).
 
-3. The converged layers lie on or very close to the IB theoretical bound (=the curve of $$ (I_X, I_Y) $$ for each $$ \beta $$), and the maps $$ p(T_i \vert X) $$ and $$ p(Y \vert T_i) $$ satisfy the IB self-consistent equations.
+3. The converged layers lie on or very close to the IB theoretical bound (=the convex curve of $$ (I_X, I_Y) $$ for each $$ \beta $$), and the maps $$ p(T_i \vert X) $$ and $$ p(Y \vert T_i) $$ satisfy the IB self-consistent equations.
 
 4. The training time dramatically is reduced when adding more hidden layers. 
 Thus the main advantage of the hidden layer is computational. 
@@ -42,7 +42,7 @@ SNR is the log difference between the normalized mean and the standard deviation
 
 -- $$ Y $$: desired output variable relevant to $$ X $$
 
--- $$ T_i $$: the compressed representative of $$ X $$ through $$i^th$$ hidden layer of the DNN
+-- $$ T_i $$: the compressed representative of $$ X $$ through $$i^{th}$$ hidden layer of the DNN
 
 -- $$ P(T \vert X) $$: encoder distribution
 
@@ -106,7 +106,7 @@ T(X) = \underset{S(X):I(S(X);Y)=I(X;Y)}{\arg\min}I(S(X);X)
 \end{aligned}
 $$
 
-This $$T(X)$$, minimal sufficient statistics, are hard to search out.
+These $$T(X)$$, minimal sufficient statistics, are hard to search out.
 In 1999, Tishby et al. proposed *the Information Bottleneck* which provide a computational framework for finding approximate minimal sufficient statistics, or the optimal tradeoff between compression of $$X$$ and prediction $$Y$$.
 
 
@@ -157,12 +157,12 @@ The paper covers the following topics:
 
 At the begining of training by SGD, the NN increases $$ I(T_i;Y) $$ while preserving the DPI order regardless of the amount of data.
 This period is the ERM phase.
-Then, over a relatively much longer training epochs, $$ I(X;T_i) $$ decreases and NN removes irrelevant information until convergence.
+Then, over relatively much longer training epochs, $$ I(X;T_i) $$ decreases and NN removes irrelevant information until convergence.
 This period is the *representation compression phase*.
 
 Unlike the ERM phase, the compression phase is probably surprising and unexpected phenomenon.
 There was no explicit regularization in the experiment and the same phase shift was observed for other problems.
-This 2-phase learning seems to be common in training DNNs by SGD.
+This 2-phases learning seems to be common in training DNNs by SGD.
 
 In particular, the ERM phase of each NN was similar no matter the sizes of training sample, but the compression phase was not.
 $$ I(T_i;Y) $$ decreased when the sample size was small and conversely increased when it was large.

@@ -47,8 +47,8 @@ $$
 The average volume of the elements of $$ X $$ that are mapped to the same codeword is $$ 2^{H(X \vert \tilde{X})} $$, and entropy $$ H(X) $$ is the expected amout of information to transmit information about random variable X.
 
 What is this partitioning? For instance, in my opinion, it is similar with making groups among the objects for a specific purpose. 
-Suppose that we need to classify 100 people in nationality. 
-Then we will assign each of them to distinct sets.
+Suppose that we need to classify 100 people by nationality, but we only know their characteristics like birthplace, ethic group, skin color, etc.
+Although inferring nationality from these features is not deterministic (=$$ p(\tilde{x} \vert x) $$), we can assign people to distinct sets considering their features (=decision boundary).
 These each person is $$ x \in X $$, distinct set is $$ \tilde{x} \in \tilde{X} $$ and nationality is, not mentioned yet, $$ y \in Y $$.
 
 Let us consider the quality of a partitioning of $$ X $$.
