@@ -47,7 +47,7 @@ $$
 The average volume of the elements of $$ X $$ that are mapped to the same codeword is $$ 2^{H(X \vert \tilde{X})} $$, and entropy $$ H(X) $$ is the expected amout of information to transmit information about random variable X.
 
 What is this partitioning? For instance, in my opinion, it is similar with making groups among the objects for a specific purpose. 
-Suppose that we need to classify 100 people by nationality, but we only know their characteristics like birthplace, ethic group, skin color, etc.
+Suppose that we need to classify 100 people by nationality, but we only know their characteristics like birthplace, ethnic group, skin color, etc.
 Although inferring nationality from these features is not deterministic (=$$ p(\tilde{x} \vert x) $$), we can assign people to distinct sets considering their features (=decision boundary).
 These each person is $$ x \in X $$, distinct set is $$ \tilde{x} \in \tilde{X} $$ and nationality is, not mentioned yet, $$ y \in Y $$.
 
@@ -226,3 +226,13 @@ The solutions of the self consistent equations thus correspond to a family of su
 ## Reference
 
 - Tishby, Naftali, Fernando C. Pereira, and William Bialek. "The information bottleneck method." arXiv preprint physics/0004057 (2000).
+
+
+
+## Reviews of the Mainstream of the Information Bottleneck Framework
+
+[The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
+
+[Opening the Black Box of DNNs via Information (2017)](https://disin7c9.github.io/review/2023-08-18-Opening-the-Black-Box-of-Deep-Neural-Networks-via-Information)
+
+[Farewell to Mutual Information (2021)](https://disin7c9.github.io/review/2023-08-19-Farewell-to-Mutual-Information)
