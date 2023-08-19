@@ -241,3 +241,7 @@ With larger training samples more details on $$X$$ become relevant for $$Y$$, wh
 ## Reviews of the Mainstream of the Information Bottleneck Framework
 
 [The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
+
+[Opening the Black Box of DNNs via Information (2017)](https://disin7c9.github.io/review/2023-08-18-Opening-the-Black-Box-of-Deep-Neural-Networks-via-Information)
+
+[Farewell to Mutual Information (2021)](https://disin7c9.github.io/review/2023-08-19-Farewell-to-Mutual-Information)

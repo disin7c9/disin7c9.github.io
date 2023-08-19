@@ -15,7 +15,7 @@ Furthermore, by expending VSD to mutli-view learning, they provide Variational M
 
 One of the shortcomings of the conventional IB methods is that they have to compromise between representation compression and Empirical Risk Minimization (ERM), which makes it difficult to achieve both compression and prediction of flawless quality.
 The authors present a new approach that makes it possible to preserve sufficient amout of relevant information meanwhile remove irrelevant redundancy.
-The most important property of this approach is that **the approach optimizes IB based on MI, but does not explicitly estimates it.**
+The most important property of this approach is that **the approach optimizes IB based on MI, but does not explicitly estimate it.**
 
 
 - Notation
@@ -240,3 +240,5 @@ with the coefficient $$\lambda$$.
 [The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
 
 [Opening the Black Box of DNNs via Information (2017)](https://disin7c9.github.io/review/2023-08-18-Opening-the-Black-Box-of-Deep-Neural-Networks-via-Information)
+
+[Farewell to Mutual Information (2021)](https://disin7c9.github.io/review/2023-08-19-Farewell-to-Mutual-Information)
