@@ -106,17 +106,17 @@ Let us look into the python code.
 
 Each MI_loss_i corresponds to the following equations like:
 
-MI_loss_1: $$ I(y_t^i;\tilde{z}_t^i) $$
+MI_loss_1 = $$ I(y_t^i;\tilde{z}_t^i) $$
 
-MI_loss_2: $$ I(\tilde{z}_t^i;z_t^i) $$
+MI_loss_2 = $$ I(\tilde{z}_t^i;z_t^i) $$
 
-MI_loss_3: $$ I(y_t^i;z_t^{t+\delta}) $$ 
+MI_loss_3 = $$ I(y_t^i;z_t^{t+\delta}) $$ 
 
-MI_loss_4: $$ I(z_{t+\delta}^i;\tilde{z}_t^i) $$ 
+MI_loss_4 = $$ I(z_{t+\delta}^i;\tilde{z}_t^i) $$ 
 
-MI_loss_5: $$ I(y_t^i;z_t^i) $$
+MI_loss_5 = $$ I(y_t^i;z_t^i) $$
 
-MI_loss_6: $$ I(z_t^i;\tilde{z}_t^i) $$
+MI_loss_6 = $$ I(z_t^i;\tilde{z}_t^i) $$
 
 
 Then let us figure out what 'feat_label_mi_estimation' and 'feat_feat_mi_estimation' are.
