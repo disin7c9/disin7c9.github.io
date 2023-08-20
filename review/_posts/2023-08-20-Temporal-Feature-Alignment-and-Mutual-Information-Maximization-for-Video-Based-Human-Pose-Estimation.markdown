@@ -66,7 +66,7 @@ I(y_t^i;\tilde{z}_t^i \vert z_t^i) \approx I(y_t^i;\tilde{z}_t^i) - I(\tilde{z}_
 $$
 
 
-Next, we have to minimize MI $$ I(y_t^i;z_t^i) $$ and $$ I(y_t^i;z_t^{t+\delta}) $$, complementary to $$ \tilde{z}_t^i) $$.
+Next, we have to minimize MI $$ I(y_t^i;z_t^i) $$ and $$ I(y_t^i;z_t^{t+\delta}) $$, complementary to $$ \tilde{z}_t^i $$.
 
 - sub-opt. 2. $$\min \{ I(y_t^i;z_{t+\delta}^i \vert \tilde{z}_t^i) + I(y_t^i;z_t^i \vert \tilde{z}_t^i) \} $$
 
