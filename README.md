@@ -1,3 +1,5 @@
 # github io of disin7c9
 
-Review deep learning papers or codes
+https://disin7c9.github.io/
+
+Review deep learning papers and codes
