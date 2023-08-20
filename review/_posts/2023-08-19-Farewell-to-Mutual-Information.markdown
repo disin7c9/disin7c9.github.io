@@ -247,3 +247,4 @@ with the coefficient $$\lambda$$.
 
 ## Following Review
 
+[Temporal Feature Alignment and Mutual Information Maximization for Video Based Human Pose Estimation](https://disin7c9.github.io/review/2023-08-20-Temporal-Feature-Alignment-and-Mutual-Information-Maximization-for-Video-Based-Human-Pose-Estimation)
