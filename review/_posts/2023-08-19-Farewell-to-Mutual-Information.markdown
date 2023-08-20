@@ -242,3 +242,9 @@ with the coefficient $$\lambda$$.
 [Opening the Black Box of DNNs via Information (2017)](https://disin7c9.github.io/review/2023-08-18-Opening-the-Black-Box-of-Deep-Neural-Networks-via-Information)
 
 [Farewell to Mutual Information (2021)](https://disin7c9.github.io/review/2023-08-19-Farewell-to-Mutual-Information)
+
+
+
+## Following Review
+
+[Temporal Feature Alignment and Mutual Information Maximization for Video Based Human Pose Estimation (2022)](https://disin7c9.github.io/review/2023-08-20-Temporal-Feature-Alignment-and-Mutual-Information-Maximization-for-Video-Based-Human-Pose-Estimation)
