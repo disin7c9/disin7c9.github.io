@@ -3,5 +3,5 @@ layout: list
 title: Review
 slug: review
 description: >
-  Review papers or codes.
+  Review papers and codes.
 ---
