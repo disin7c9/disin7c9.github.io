@@ -180,7 +180,7 @@ Now, let us take a look at $$I(z_1;v_2)$$ of $$I(v_1;z_1) = I(v_1;z_1 \vert v_2)
 
 $$ 
 \begin{aligned}
-I(z_1;v_2) = I(v_2;z1 \vert y) + I(z_1;y).
+I(z_1;v_2) = I(v_2;z_1 \vert y) + I(z_1;y).
 \end{aligned}
 $$
 
@@ -188,18 +188,18 @@ This implies that
 
 $$ 
 \begin{aligned}
-I(v_1;z_1) = I(v_1;z_1 \vert v_2) + I(v_2;z1 \vert y) + I(z_1;y).
+I(v_1;z_1) = I(v_1;z_1 \vert v_2) + I(v_2;z_1 \vert y) + I(z_1;y).
 \end{aligned}
 $$
 
-From the equation, we can find out that even view-consistent information ($$I(z_1;v_2)$$) would includes superflous one ($$I(v_2;z1 \vert y)$$).
+From the equation, we can find out that even view-consistent information ($$I(z_1;v_2)$$) would includes superflous one ($$I(v_2;z_1 \vert y)$$).
 
 By the Theorem 2 of the paper, $$z_1$$ and $$z_2$$ are view-consistent if the following conditions are satisfied.
 
 $$ 
 \begin{aligned}
-I(v_1;z_1 \vert v_2) + I(v_2;z1 \vert y) = 0, \newline
-I(v_2;z_2 \vert v_1) + I(v_1;z2 \vert y) = 0.
+I(v_1;z_1 \vert v_2) + I(v_2;z_1 \vert y) = 0, \newline
+I(v_2;z_2 \vert v_1) + I(v_1;z_2 \vert y) = 0.
 \end{aligned}
 $$
 
