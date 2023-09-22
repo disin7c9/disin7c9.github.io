@@ -107,19 +107,18 @@ $$
 D^*_G(x) = \frac{p_{data}(x)}{p_{data}(x) + p_g(x)}
 $$
 
--  Note on proof
+-  note on the proof
 
 The training criterion for $$D$$ is to maximize the $$V(G,D)$$.
 
 $$
 \begin{gathered}
-  V(G,D) = \int_{x}p_{data}(x)logD(x) + p_g(x)log(1-D(x))dx \\
+  V(G,D) = \int_{x}p_{data}(x)logD(x) + p_g(x)log(1-D(x))dx \newline
 
-  \text{and} \\
-  \\
+  \text{and} \newline
 
-  f(y) := a\log(y) + b\log(1-y). \\
-  \forall \ (a,b) \in \mathbb{R}^2/\{0,0\}, \ y \in [0,1], \\ 
+  f(y) := a\log(y) + b\log(1-y). \newline
+  \forall \ (a,b) \in \mathbb{R}^2/\{0,0\}, \ y \in [0,1], \newline
   \underset{y}{argmax} f(y) = \frac{a}{a+b}
 \end{gathered}
 $$
@@ -128,7 +127,7 @@ $$
 
 The global minimum of the virtual training criterion $$C(G)$$ is achieved iff $$p_g=p_{data}$$. At the point, $$C(G)$$ achieves the value $$-\log4$$.
 
-- Note on proof
+- note on the proof
 
 $$p_{data}$$ is apparent optimal value of $$p_g$$.
 
@@ -154,7 +153,7 @@ If $$G$$ and $$D$$ have enough capacity, and at each step of the Algorithm, the 
 
 $$\mathbb{E}_{x{\sim}p_{data}}[logD^*_G(x)] + \mathbb{E}_{x{\sim}p_g}[log(1-D^*_G(x))]$$
 
-- Note
+- note
 
 -- the point where the maximum is attained: $$\beta = \underset{\alpha \in A}{argsup} f_{\alpha}(x)$$
 
@@ -169,7 +168,7 @@ $$\mathbb{E}_{x{\sim}p_{data}}[logD^*_G(x)] + \mathbb{E}_{x{\sim}p_g}[log(1-D^*_
 
 ## 4. PyTorch Tutorials: DCGAN
 
-Training techniques of DCGAN
+the training techniques of DCGAN
 
 - update D Network
 
