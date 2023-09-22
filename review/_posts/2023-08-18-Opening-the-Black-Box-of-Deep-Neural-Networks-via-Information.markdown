@@ -219,7 +219,7 @@ To evaluate the IB optimality of each layer the authors tested whether the conve
 For the evaluation, they calculated optimal IB encoder $$ p_{i,\beta}^{IB}(t \vert x)$$ from the $$i^{th}$$ layer decoder $$ p_i(y \vert t)$$.
 Then, they obtained the optimal $$ \beta_i $$ for each layer through minimizing the averaged Kullback-Leibler divergence between the IB and the layer's encoders.
 
-$$ (I_X^i, I_Y^i) $$ and the IB information curve show that each converged layer impressively close to the theoretical IB limit ($$ R(D) $$), where the slope of the curve $$\beta^{-1}$$ matches to the estimated optimal $$\beta_i^*$$
+$$ (I_X^i, I_Y^i) $$ and the IB information curve show that each converged layer impressively close to the theoretical IB limit, where the slope of the curve $$\beta^{-1}$$ matches to the estimated optimal $$\beta_i^*$$
 
 
 ### 2.9. Evolution of the layers with training sample size &nbsp; - (B)

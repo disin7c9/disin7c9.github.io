@@ -24,6 +24,10 @@ Then, the decoder generates an output sequence $$\{\hat{y}_1, \dots, \hat{y}_m\}
 
 - Notation
 
+-- $$\mathbf{q},\mathbf{k},\mathbf{v}$$: query, key, and value row vectors
+
+-- $$Q,K,V$$: matrices of $$\mathbf{q},\mathbf{k},\mathbf{v}$$ respectively
+
 -- $$d_{model}$$: the output dimension of all sub-layers and embedding layers, default=512
 
 -- $$d_{k}$$: the dimension of keys and queries from the self-attention, default=64
@@ -83,7 +87,7 @@ figure 3: (left) scaled dot-product attention. (right) multi-head attention cons
 
 ### 1.2.1. Scaled Dot-Product Attention
 
-The authors' particular attention, scaled dot-product attention, calculates the dot products of the query with all keys, divides each by $$\sqrt{d_k}$$, applies a softmax function to obtain the weights, and computes matrix multiplication beetween weights and values.
+The authors' particular attention, scaled dot-product attention, calculates the dot products of the query with all keys, divides each by $$\sqrt{d_k}$$, applies a softmax function to obtain the weights, and computes matrix multiplication between weights and values matrices.
 In practice, for the length of a sequence $$n$$,
 
 $$
@@ -157,10 +161,14 @@ PE_{(pos, 2i+1)} = \cos(pos/10000^{2i/d_{model}}).
 \end{gathered}
 $$
 
-Here, the bigger $$i$$ is, the longer period is, resulting in a unique $$PE(pos)$$ for each $$pos$$.
+Here, the bigger $$i$$ is, the longer period is, resulting in a unique $$PE_{(pos)}$$ for each $$pos$$.
 This allows the model to figure out the absolute position of each token in the sequence.
-Besides, since the sine and cosine functions have the same frequency for each $$i$$ as in the above equations, $$PE_{pos}$$ can be represented as a linear function of $$PE_{pos+k}$$ for arbitrary fixed offset $$k$$.
-Therefore the model easily learns to attend by relative positions.
+Besides, the model easily learns to attend by relative positions since $$PE_{pos}$$ can be represented as a linear function of $$PE_{pos+k}$$ for arbitrary fixed offset $$k$$.
+
+
+![figure 4](/assets/img/review/attention_is_all_you_need/handson-ml2_sinusoidal_PE.png) \\
+figure 4: sine and cosine positional encodings. (source: https://github.com/ageron/handson-ml2/blob/master/16_nlp_with_rnns_and_attention.ipynb)
+{:.figure}
 
 
 ## Regularization
@@ -172,7 +180,7 @@ In particular, the transformer apply dropout to the output of the multi-head att
 # 2. Why Self-Attention
 
 
-![figure 4](/assets/img/review/attention_is_all_you_need/attention_is_all_you_need-table1.png)
+![figure 5](/assets/img/review/attention_is_all_you_need/attention_is_all_you_need-table1.png)
 
 
 Let us compare self-attention to recurrence and convolution in 3 aspects regarding the computation time for processing variable-length sequence.
@@ -188,7 +196,7 @@ With regard to the computational complexity, unrestricted self-attention has $$O
 $$d > n$$ is common in many cases of state-of-the-art transduction models.
 
 Concerning convolution, a single convolutional layer with kernel width $$k < n$$ cannot connect all positions.
-So it has $$O(n/k)$$ or $$O(\log_k(n)$$ maximum path length depending on its type.
+So it has $$O(n/k)$$ or $$O(\log_k(n))$$ maximum path length depending on its type.
 Also convolutional layers are generally expensive than recurrent layers in respect of computational complexity.
 
 
