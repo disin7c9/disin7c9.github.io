@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://disin7c9.github.io/
