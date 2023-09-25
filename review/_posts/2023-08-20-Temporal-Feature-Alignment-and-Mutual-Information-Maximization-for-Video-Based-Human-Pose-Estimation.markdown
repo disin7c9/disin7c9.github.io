@@ -28,7 +28,7 @@ Furthermore, they applied mutual information (MI) to maximize the task-relevant 
 - The backbone network: HRNet-W48
 
 
-![figure 1](/assets/img/review/FAMI-Pose/overall_pipeline_of_FAMI-Pose_framework.png)
+![figure 1](/assets/img/review/FAMI-pose/overall_pipeline_of_FAMI-Pose_framework.png)
 figure 1: Overall pipeline of the paper (FAMI-Pose).
 {:.figure}
 
@@ -101,7 +101,7 @@ The authors also provide their code [here](https://github.com/Pose-Group/FAMI-Po
 
 Let us look into the python code.
 
-![figure 2](/assets/img/review/FAMI-Pose/FAMI-pose_Alignment_mi_loss.png)
+![figure 2](/assets/img/review/FAMI-pose/FAMI-pose_Alignment_mi_loss.png)
 
 Each MI_loss_i corresponds to the following equations like:
 
@@ -120,7 +120,7 @@ MI_loss_6 = $$ I(z_t^i;\tilde{z}_t^i) $$
 
 Then let us figure out what 'feat_label_mi_estimation' and 'feat_feat_mi_estimation' are.
 
-![figure 3](/assets/img/review/FAMI-Pose/FAMI-pose_Alignment_mi_estimation.png)
+![figure 3](/assets/img/review/FAMI-pose/FAMI-pose_Alignment_mi_estimation.png)
 
 Excluding other techniques, they are torch.nn.functional.kl_div; i.e., they are just Kullback-Leibler divergence (relative entropy).
 
