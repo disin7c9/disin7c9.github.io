@@ -188,7 +188,7 @@ This entropy maximization by additive noise is known as stochastic relaxation.
 
 However, it is uncertain why the different depth layers converge to distinct points in the information plane.
 
-Another interesting point is randomized characterictic of the converged weights after compression by diffusion phase.
+Another interesting point is randomized characteristic of the converged weights after compression by diffusion phase.
 There was no indication of weights vanishing or norm decreases near the convergence.
 Furthermore, the correlations between in-weights of different neurons in the same layer was very small.
 This indicates that there are numerous different optimized networks, and trying to interpret single neuron in such networks would be meaningless.
