@@ -58,7 +58,7 @@ Batch normalization empirically estimates the mean and standard deviation of the
 Due to the estimation method, however, the technique has constraints on the size of a mini-batch.
 Moreover, batch normalization is hard to apply to sequence data since the layer need to save some statistics for each time series order but sequences always have variable-length.
 On the other hand, layer normalization normalize representations in the same layer; i.e., it normalizes each sample at once.
-In addition, layer normalization perform equivalent computations in training and testing step since it uses identical gain and bias parameter for each time sequence unlike batch normalization [3].
+In addition, layer normalization performs equivalent computations in training and testing step since it uses identical gain and bias parameters for each time sequence unlike batch normalization [3].
 
 ### Decoder
 
@@ -88,7 +88,7 @@ figure 3: (left) scaled dot-product attention. (right) multi-head attention cons
 ### 1.2.1. Scaled Dot-Product Attention
 
 The authors' particular attention, scaled dot-product attention, calculates the dot products of the query with all keys, divides each by $$\sqrt{d_k}$$, applies a softmax function to obtain the weights, and computes matrix multiplication between weights and values matrices.
-In practice, for the length of a sequence $$n$$,
+In practice, for the length $$n$$ of a sequence,
 
 $$
 \begin{aligned}
@@ -136,7 +136,7 @@ The feed-forward sub-layer consists of 2 linear transformations with a ReLU acti
 
 $$ FFN(x) = \max(0, xW_1 + b_1)W_2 + b_2 $$
 
-The input and output dimension is $$d_{model}$$, and the inner dimension is $$d_{ff}$$.
+The input and output dimensions are $$d_{model}$$, and the inner dimension is $$d_{ff}$$.
 
 
 ## 1.4. Embedding and Softmax

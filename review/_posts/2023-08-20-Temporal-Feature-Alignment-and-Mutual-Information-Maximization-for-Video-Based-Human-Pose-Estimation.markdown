@@ -28,10 +28,9 @@ Furthermore, they applied mutual information (MI) to maximize the task-relevant 
 - The backbone network: HRNet-W48
 
 
-## Overall pipeline of the paper (FAMI-Pose)
-
 ![figure 1](/assets/img/review/FAMI-Pose/overall_pipeline_of_FAMI-Pose_framework.png)
-
+figure 1: Overall pipeline of the paper (FAMI-Pose).
+{:.figure}
 
 ## 1. MI loss
 
