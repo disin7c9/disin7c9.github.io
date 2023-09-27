@@ -189,11 +189,11 @@ We can find the optimal assignment by minimizing the functional
 
 $$
 \begin{aligned}
-\mathcal{L}[p(\tilde{x} \vert x)] = I(X;\tilde{X}) - \beta I(\tilde{X};Y),
+\mathcal{L}[p(\tilde{x} \vert x)] = I(X;\tilde{X}) - \beta I(\tilde{X};Y).
 \end{aligned}
 $$
 
-At $$ \beta=0 $$, $$ X $$ shrinked into a single point, while as $$ \beta \rightarrow \infty $$ we got arbitrarily trivial quantization with full of redundancy,
+At $$ \beta=0 $$, $$ X $$ shrinked into a single point, while as $$ \beta \rightarrow \infty $$ we got arbitrarily trivial quantization with full of redundancy.
 Interestingly, if there are **sufficient statistics**, it is possible to preserve almost all the meaningful information at finite $$ \beta $$ with a significant compression of the original data.
 
 

@@ -205,7 +205,7 @@ Here are the results from another experiment.
 3. *The compression is faster for the deeper layers.*
 
 4. *Even wide hidden layers eventually compress in the diffusion phase. Adding extra width does not help.*
-(probably it means that overcompleteness is uselss.)
+(probably it means that overcompleteness is useless.)
 
 ### 2.7. The computational benefits of layered diffusion &nbsp; - (C)
 
