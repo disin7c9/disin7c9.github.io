@@ -94,8 +94,8 @@ $$
 \begin{aligned}
   Attention(Q,K,V)
   &= softmax(\frac{QK^T}{\sqrt{d_k}})V \newline
-  &= softmax(\frac{1}{\sqrt{d_k}} \begin{bmatrix} \mathbf{q}_1 \newline \vdots \newline \mathbf{q}_n \end{bmatrix} \begin{bmatrix} \mathbf{k}_1 & \cdots & \mathbf{k}_n \end{bmatrix}) \begin{bmatrix} \mathbf{v}_1 \newline \vdots \newline \mathbf{v}_n \end{bmatrix} \newline
-  &= \begin{bmatrix} softmax(\frac{1}{\sqrt{d_k}} \left[\mathbf{q}_1\mathbf{k}_1, \cdots, \mathbf{q}_1\mathbf{k}_n \right]) \newline \vdots \newline softmax(\frac{1}{\sqrt{d_k}} \left[\mathbf{q}_n\mathbf{k}_1, \cdots, \mathbf{q}_n\mathbf{k}_n \right]) \end{bmatrix} \begin{bmatrix} \mathbf{v}_1 \newline \vdots \newline \mathbf{v}_n \end{bmatrix} \newline
+  &= softmax(\frac{1}{\sqrt{d_k}} \begin{bmatrix} \mathbf{q}_1 \newline \vdots \newline \mathbf{q}_n \end{bmatrix} \begin{bmatrix} \mathbf{k}_1^T & \cdots & \mathbf{k}_n^T \end{bmatrix}) \begin{bmatrix} \mathbf{v}_1 \newline \vdots \newline \mathbf{v}_n \end{bmatrix} \newline
+  &= \begin{bmatrix} softmax(\frac{1}{\sqrt{d_k}} \left[\mathbf{q}_1\mathbf{k}_1^T, \cdots, \mathbf{q}_1\mathbf{k}_n^T \right]) \newline \vdots \newline softmax(\frac{1}{\sqrt{d_k}} \left[\mathbf{q}_n\mathbf{k}_1^T, \cdots, \mathbf{q}_n\mathbf{k}_n^T \right]) \end{bmatrix} \begin{bmatrix} \mathbf{v}_1 \newline \vdots \newline \mathbf{v}_n \end{bmatrix} \newline
   &= \begin{bmatrix} p_{11} & \cdots & p_{1n} \newline \quad & \vdots & \quad \newline p_{n1} & \cdots & p_{nn} \end{bmatrix} \begin{bmatrix} \mathbf{v}_1 \newline \vdots \newline \mathbf{v}_n \end{bmatrix} \newline
   &= \begin{bmatrix} p_{11}\mathbf{v}_1 + \cdots + p_{1n}\mathbf{v}_n \newline \quad \vdots \quad \newline p_{n1}\mathbf{v}_1 + \cdots + p_{nn}\mathbf{v}_n \end{bmatrix}.
 \end{aligned}
@@ -174,7 +174,7 @@ figure 4: sine and cosine positional encodings. (source: https://github.com/ager
 ## Regularization
 
 The authors use dropout and it is only applied to fully connected layers.
-In particular, the transformer apply dropout to the output of the multi-head attention and the feed-forward network before normalized and the sums of the embeddings and the positional encodings [4, 5].
+In particular, the transformer apply dropout to the outputs of the multi-head attention and the feed-forward network respectively before normalized and the sums of the embeddings and the positional encodings [4, 5].
 
 
 # 2. Why Self-Attention
