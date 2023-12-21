@@ -114,7 +114,7 @@ This corrsponds to $$L_{0}$$ and $$L_{t-1}$$ for the $$t$$ = 1 case and the $$t$
 
 Let us talk about DDPM in TensorFlow, Python.
 The authors provide their code [here](https://github.com/hojonathanho/diffusion).
-We will only look into the core files "diffusion-master/diffusion_tf/diffusion_utils.py" that contains theoretical contents.
+We will only look into the core file "diffusion-master/diffusion_tf/diffusion_utils.py" that contains theoretical contents.
 "diffusion_utils.py" is used in "diffusion-master/scripts/run_celebahq.py".
 
 **Default setting:** \\
@@ -126,7 +126,9 @@ $$\beta$$ schedule = "linear" (linspace from 1e-4 to 2e-2)
 ![figure2](/assets/img/review/DDPM/DDPM_algorithm1.png)
 {:.figure}
 
-### 0
+**The following numberings do not correspond to each of pseudocodes.**
+
+### T,S.0
 Initialize the **Model** and load **GaussianDiffusion** in diffusion_utils.py.
 **GaussianDiffusion** contains almost all mathematical functions for the diffusion model.
 
@@ -135,7 +137,7 @@ Initialize the **Model** and load **GaussianDiffusion** in diffusion_utils.py.
 
 Let's follow the training code flow.
 
-### 1
+### T.1
 To train the **Model**, run **Model.train_fn**.
 For each input data in minibatch, sample $$t$$ from uniform distrubution and use the constant $$t$$.
 **self._denoise** load and return the adapted Unet.
@@ -144,7 +146,7 @@ Now, let's jump into **GaussianDiffusion** to look at **self.diffusion.p_losses*
 ![figure4](/assets/img/review/DDPM/DDPM_celebahq_Model_train.png)
 {:.figure}
 
-### 2
+### T.2
 **p_losses** corresponds to the equation $$(12)$$, $$L_{simple}(\theta) = \mathbb{E}_{t, \mathbf{x}_0, \pmb{\epsilon}} \left[ \| \pmb{\epsilon} - \pmb{\epsilon}_{\theta}(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}, t) \|^2 \right]$$.
 As figured out in chapter 1.2, the parameterized and simplified variational bound minimizes difference between Gaussian noise $$\pmb{\epsilon}$$ and model $$\pmb{\epsilon}_{\theta}$$.
 **self.q_sample** is equivalent to sampling $$\mathbf{x}_t$$ from $$q(\mathbf{x}_t \vert \mathbf{x}_0)$$ (the equation $$(2)$$) for an arbitrary $$t$$.
@@ -154,7 +156,7 @@ As figured out in chapter 1.2, the parameterized and simplified variational boun
 ![figure5](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_p_losses.png)
 {:.figure}
 
-- **The result**: $$L_{simple}(\theta)$$, returned from level 2.
+- **The result**: $$L_{simple}(\theta)$$, returned from step 2.
 
 
 ## 2.2. Sampling
@@ -165,7 +167,7 @@ As figured out in chapter 1.2, the parameterized and simplified variational boun
 
 It's time for the sampling code.
 
-### 1
+### S.1
 We need to run **Model.samples_fn** to generate samples. 
 **self.diffusion.p_sample_loop** is a functions of **GaussianDiffusion**.
 It is the iteration of **GaussianDiffusion.p_sample** that samples $$\mathbf{x}_{t-1} \sim p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$$ from $$T$$ to $$1$$;
@@ -175,7 +177,7 @@ So, let's take a look at **p_sample**.
 ![figure7](/assets/img/review/DDPM/DDPM_celebahq_Model_sample.png)
 {:.figure}
 
-### 2
+### S.2
 **p_sample** corresponds to $$\mathbf{x}_{t-1} \sim p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$$ by computing $$\mathbf{x}_{t-1} = \pmb{\mu}_{\theta}(\mathbf{x}_t, t) + \sigma_t\mathbf{z} = \frac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon}_{\theta}(\mathbf{x}_t, t)) + \sigma_t\mathbf{z}$$, where $$\mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})$$.
 (It was mentioned between equations $$(10)$$&$$(11)$$ in chapter 1.2).
 We need to compute **p_mean_variance** to obtain $$\pmb{\mu}_{\theta}(\mathbf{x}_t, t)$$ and $$\log(\sigma_t^2)$$.
@@ -183,21 +185,21 @@ We need to compute **p_mean_variance** to obtain $$\pmb{\mu}_{\theta}(\mathbf{x}
 ![figure8](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_p_sample.png)
 {:.figure}
 
-### 3
+### S.3
 There are **predict_start_from_noise** and **q_posterior**.
 Let's take a look at each of them.
 
 ![figure9](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_p_mean_variance.png)
 {:.figure}
 
-### 3.1
+### S.3.1
 **predict_start_from_noise** is the reverse process of sampling $$\mathbf{x}_t$$ from $$\mathbf{x}_0$$, directly (q_sample, equation $$(2)$$).
 So it returns $$\mathbf{x}_0$$ from a noisy sample $$\mathbf{x}_t$$, $$t$$, and the estimated noise $$\pmb{\epsilon}_{\theta}$$ between $$\mathbf{x}_t$$&$$\mathbf{x}_{0}$$ by **Unet**.
 
 ![figure10](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_predict_start_from_noise.png)
 {:.figure}
 
-### 3.2
+### S.3.2
 **q_posterior** is equivalent to equation $$(7)$$ and takes $$\mathbf{x}_{0}$$, $$\mathbf{x}_{t}$$, t.
 This $$\mathbf{x}_{0}$$ came from **predict_start_from_noise**.
 It returns $$\tilde{\pmb{\mu}}_t(\mathbf{x}_t, \mathbf{x}_0)$$, $$\sigma_t^2$$ and $$\log{ \max (\text{1e-20}, \sigma_t^2)}$$.
@@ -206,7 +208,7 @@ Note that $$\sigma_t^2=\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha
 ![figure11](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_q_posterior.png)
 {:.figure}
 
-- **The result**: synthetic sample $$\mathbf{x}_0$$, returned from level 1 as a result of the iteration.
+- **The result**: synthetic sample $$\mathbf{x}_0$$, returned from step 1 as a result of the iteration.
 
 
 ## Note
