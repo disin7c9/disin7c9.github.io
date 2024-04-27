@@ -232,13 +232,13 @@ With larger training samples more details on $$X$$ become relevant for $$Y$$, wh
 
 
 
-## Reference
+# Reference
 
 - Shwartz-Ziv, Ravid, and Naftali Tishby. "Opening the black box of deep neural networks via information." arXiv preprint arXiv:1703.00810 (2017).
 
 
 
-## Reviews of the Mainstream of the Information Bottleneck Framework
+# Reviews of the Mainstream of the Information Bottleneck Framework
 
 [The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
 

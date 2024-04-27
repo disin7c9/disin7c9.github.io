@@ -227,7 +227,7 @@ with the coefficient $$\lambda$$.
 
 
 
-## Reference
+# Reference
 
 1. Tian, Xudong, et al. "Farewell to mutual information: Variational distillation for cross-modal person re-identification." Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2021.
 
@@ -235,7 +235,7 @@ with the coefficient $$\lambda$$.
 
 
 
-## Reviews of the Mainstream of the Information Bottleneck Framework
+# Reviews of the Mainstream of the Information Bottleneck Framework
 
 [The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
 
@@ -245,6 +245,6 @@ with the coefficient $$\lambda$$.
 
 
 
-## Following Review
+# Following Review
 
 [Temporal Feature Alignment and Mutual Information Maximization for Video Based Human Pose Estimation](https://disin7c9.github.io/review/2023-08-20-Temporal-Feature-Alignment-and-Mutual-Information-Maximization-for-Video-Based-Human-Pose-Estimation)

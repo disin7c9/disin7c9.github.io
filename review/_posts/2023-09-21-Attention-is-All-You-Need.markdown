@@ -12,7 +12,7 @@ In 2017, the authors released the transformer that uses only the attention mecha
 
 # 1. Model Architecture
 
-The transformer [1] is auto-regressive model with encoder-decoder structure.
+The transformer [1] is an auto-regressive model with encoder-decoder structure.
 An auto-regressive model of order $$p$$ can be written as 
 
 $$y_t = c + \phi_{1}y_{t-1} + \phi_{2}y_{t-2} + \dots + \phi_{p}y_{t-p} + \epsilon_t$$
@@ -192,7 +192,7 @@ The shorter these paths, the easier it is to learn.
 
 In terms of parallel computing, a self-attention layer connects all positions in a sequence with a constant number of operations, while recurrent layer requires $$O(n)$$ sequential oprations.
 
-With regard to the computational complexity, unrestricted self-attention has $$O(n^2 \cdot d)$$ and we can find out that this runtime obtained from the number of multiplications in the computation in chapter 2.2.1.
+With regard to the computational complexity, unrestricted self-attention has $$O(n^2 \cdot d)$$ and we can find out that this runtime obtained from the number of multiplications in the computation in section 1.2.1.
 $$d > n$$ is common in many cases of state-of-the-art transduction models.
 
 Concerning convolution, a single convolutional layer with kernel width $$k < n$$ cannot connect all positions.
@@ -201,7 +201,7 @@ Also convolutional layers are generally expensive than recurrent layers in respe
 
 
 
-## References
+# References
 
 [1] Vaswani, Ashish, et al. "Attention is all you need." Advances in neural information processing systems 30 (2017).
 

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Denoising-Diffusion-Probabilistic-Models"
+title: "Denoising Diffusion Probabilistic Models"
 description: review DDPM.
 ---
 
@@ -30,7 +30,9 @@ $$q(\mathbf{x}_{1:T} \vert \mathbf{x}_0) = \underset{t=1}{\overset{T}{\prod}} q(
 An impressive property of the diffusion process is that we can sample $$\mathbf{x}_t$$ at an arbitrary timestep $$t$$ in a closed form:
 Let $$\alpha_t = 1 - \beta_t$$ and $$\bar{\alpha}_t = \prod^t_{s=1}\alpha_s$$, then we have 
 
-$$q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_t; \sqrt{\bar{\alpha}_t}\mathbf{x}_0, (1-\bar{\alpha}_t)\mathbf{I}) \qquad (2)$$
+$$ q(\mathbf{x}_t \vert \mathbf{x}_0) = \mathcal{N}(\mathbf{x}_t; \sqrt{\bar{\alpha}_t}\mathbf{x}_0, (1-\bar{\alpha}_t)\mathbf{I}) \qquad (2)$$
+
+i.e., $$ \mathbf{x}_t = \sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{(1-\bar{\alpha}_t)} \epsilon $$ for $$ \epsilon \sim \mathcal{N}(\mathbf{0}, \mathbf{I})$$.
 
 Meanwhile, during the reverse process $$p_{\theta}(\mathbf{x}_{0:T})$$, we define it as a Markov chain with learned Gaussian transitions that approximate the posterior $$q(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$$ with $$p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$$ starting at $$p(\mathbf{x}_t) = \mathcal{N}(\mathbf{x}_t;\mathbf{0},\mathbf{I})$$:
 
@@ -77,7 +79,7 @@ To obtain discrete log likelihood, the authors set the last term of the reverse 
 ### $$L_{t-1}$$
 
 For $$1 < t \leq T$$, we defined that $$p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \pmb{\mu}_{\theta}(\mathbf{x}_t,t), \mathbf{\Sigma}_{\theta}(\mathbf{x}_t,t))$$.
-The authors first set $$\mathbf{\Sigma}_{\theta}(\mathbf{x}_t,t) = \sigma_t^2\mathbf{I} \quad (\text{where} \quad \sigma_t^2=\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_t}\beta_t)$$ to untrained time dependent constants.
+The authors first set $$ \mathbf{\Sigma}_{\theta}(\mathbf{x}_t,t) = \sigma_t^2\mathbf{I} \quad $$ (where $$ \quad \sigma_t^2=\beta_t \quad $$ or $$ \quad \sigma_t^2=\tilde{\beta}_t=\frac{1-\bar{\alpha}_{t-1}}{1-\bar{\alpha}_t}\beta_t. $$ Refer to Python code S.3.2.) to untrained time dependent constants.
 Then to parameterize $$L_{t-1}$$ with respect to $$\pmb{\mu}_{\theta}(\mathbf{x}_t,t)$$, they used the following analysis:
 With $$p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t) = \mathcal{N}(\mathbf{x}_{t-1}; \pmb{\mu}_{\theta}(\mathbf{x}_t,t), \sigma_t^2\mathbf{I})$$,
 
@@ -107,7 +109,7 @@ The authors claim that empirically better results were yielded from the followin
 
 $$L_{simple}(\theta) = \mathbb{E}_{t, \mathbf{x}_0, \pmb{\epsilon}} \left[ \| \pmb{\epsilon} - \pmb{\epsilon}_{\theta}(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}, t) \|^2 \right] \qquad (12)$$
 
-This corrsponds to $$L_{0}$$ and $$L_{t-1}$$ for the $$t$$ = 1 case and the $$t$$ > 1 cases, respectively. ($$L_{T}$$ is ignored since $$\beta_t$$ are fixed.)
+This corrsponds to $$L_{0}$$ and $$L_{t-1}$$ for the $$t$$ = 1 case and the $$t$$ > 1 cases respectively. ($$L_{T}$$ is ignored since $$\beta_t$$ are fixed.)
 
 
 # 2. Python code
@@ -148,7 +150,7 @@ Now, let's jump into **GaussianDiffusion** to look at **self.diffusion.p_losses*
 
 ### T.2
 **p_losses** corresponds to the equation $$(12)$$, $$L_{simple}(\theta) = \mathbb{E}_{t, \mathbf{x}_0, \pmb{\epsilon}} \left[ \| \pmb{\epsilon} - \pmb{\epsilon}_{\theta}(\sqrt{\bar{\alpha}_t}\mathbf{x}_0 + \sqrt{1-\bar{\alpha}_t}\pmb{\epsilon}, t) \|^2 \right]$$.
-As figured out in chapter 1.2, the parameterized and simplified variational bound minimizes difference between Gaussian noise $$\pmb{\epsilon}$$ and model $$\pmb{\epsilon}_{\theta}$$.
+As figured out in section 1.2, the parameterized and simplified variational bound minimizes difference between Gaussian noise $$\pmb{\epsilon}$$ and model $$\pmb{\epsilon}_{\theta}$$.
 **self.q_sample** is equivalent to sampling $$\mathbf{x}_t$$ from $$q(\mathbf{x}_t \vert \mathbf{x}_0)$$ (the equation $$(2)$$) for an arbitrary $$t$$.
 **denoise_fn** is the Unet and it estimates noise $$\pmb{\epsilon}_{\theta}$$ from noisy sample $$\mathbf{x}_t$$.
 **nn.meanflat** is just tf.reduce_mean with specific axis argument.
@@ -179,7 +181,7 @@ So, let's take a look at **p_sample**.
 
 ### S.2
 **p_sample** corresponds to $$\mathbf{x}_{t-1} \sim p_{\theta}(\mathbf{x}_{t-1} \vert \mathbf{x}_t)$$ by computing $$\mathbf{x}_{t-1} = \pmb{\mu}_{\theta}(\mathbf{x}_t, t) + \sigma_t\mathbf{z} = \frac{1}{\sqrt{\alpha_t}}(\mathbf{x}_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}_t}}\pmb{\epsilon}_{\theta}(\mathbf{x}_t, t)) + \sigma_t\mathbf{z}$$, where $$\mathbf{z} \sim \mathcal{N}(\mathbf{0},\mathbf{I})$$.
-(It was mentioned between equations $$(10)$$&$$(11)$$ in chapter 1.2).
+(It was mentioned between equations $$(10)$$&$$(11)$$ in section 1.2).
 We need to compute **p_mean_variance** to obtain $$\pmb{\mu}_{\theta}(\mathbf{x}_t, t)$$ and $$\log(\sigma_t^2)$$.
 
 ![figure8](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_p_sample.png)
@@ -193,7 +195,7 @@ Let's take a look at each of them.
 {:.figure}
 
 ### S.3.1
-**predict_start_from_noise** is the reverse process of sampling $$\mathbf{x}_t$$ from $$\mathbf{x}_0$$, directly (q_sample, equation $$(2)$$).
+**predict_start_from_noise** is the reverse process of sampling $$\mathbf{x}_t$$ from $$\mathbf{x}_0$$ directly (q_sample, equation $$(2)$$).
 So it returns $$\mathbf{x}_0$$ from a noisy sample $$\mathbf{x}_t$$, $$t$$, and the estimated noise $$\pmb{\epsilon}_{\theta}$$ between $$\mathbf{x}_t$$&$$\mathbf{x}_{0}$$ by **Unet**.
 
 ![figure10](/assets/img/review/DDPM/DDPM_diffusion_utils_GaussianDiffusion_predict_start_from_noise.png)
@@ -217,7 +219,7 @@ For many mathematical concepts and proofs, I recommend that you read lilianweng'
 Also it would be helpful to refer to the following [review](https://www.assemblyai.com/blog/minimagen-build-your-own-imagen-text-to-image-model/).
 
 
-## References
+# References
 
 [1] Ho, Jonathan, Ajay Jain, and Pieter Abbeel. "Denoising diffusion probabilistic models." Advances in neural information processing systems 33 (2020): 6840-6851.
 

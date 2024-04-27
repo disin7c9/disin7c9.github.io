@@ -47,6 +47,6 @@ $$
 Since $$\nabla_{x}J(\theta,x,y)$$ is partial derivates matrix of loss $$J$$ with respect to the input $$x$$, $$J$$ increases for each increment of $$ x_{ij} $$ in the direction of $$\frac{\partial J}{\partial x_{ij}}$$.
 
 
-## References
+# References
 
 - https://pytorch.org/tutorials/beginner/fgsm_tutorial
