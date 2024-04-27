@@ -181,7 +181,7 @@ the training techniques of DCGAN
 -- Use NS-GAN loss
 
 
-## 5. References
+# 5. References
 
 - Goodfellow, Ian, et al. "Generative adversarial nets." Advances in neural information processing systems 27 (2014).
 

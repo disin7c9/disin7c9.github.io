@@ -150,12 +150,12 @@ $$
 
 
 
-## Reference
+# Reference
 
 - Liu, Zhenguang, et al. "Temporal feature alignment and mutual information maximization for video-based human pose estimation." Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. 2022.
 
 
 
-## Related Review
+# Related Review
 
 [Farewell to Mutual Information (2021)](https://disin7c9.github.io/review/2023-08-19-Farewell-to-Mutual-Information)

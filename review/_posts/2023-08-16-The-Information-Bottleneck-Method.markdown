@@ -223,13 +223,13 @@ The solutions of the self consistent equations thus correspond to a family of su
 
 
 
-## Reference
+# Reference
 
 - Tishby, Naftali, Fernando C. Pereira, and William Bialek. "The information bottleneck method." arXiv preprint physics/0004057 (2000).
 
 
 
-## Reviews of the Mainstream of the Information Bottleneck Framework
+# Reviews of the Mainstream of the Information Bottleneck Framework
 
 [The Information Bottleneck Method (1999)](https://disin7c9.github.io/review/2023-08-16-The-Information-Bottleneck-Method)
 

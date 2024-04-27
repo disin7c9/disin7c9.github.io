@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Large-Language-Models-before-2021"
+title: "Large Language Models before ChatGPT 3.5"
 description: summarize the papers of GPT1, BERT, GPT3 and the scaling laws.
 ---
 
@@ -212,7 +212,7 @@ After then the model pick one token from a sub-group of the candidates, where th
       - For details, I suggest you to refer to [this post](https://huggingface.co/learn/nlp-course/chapter6/5).
 
 
-## References
+# References
 
 [1] Radford, Alec, et al. "Improving language understanding by generative pre-training." (2018).
 
