@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "Generative Adversarial Nets: GAN & DCGAN"
-description: review GAN and pytorch tutorial DCGAN
+title: "Generative Adversarial Nets: GAN"
+description: review GAN
 ---
 
 As of 2020, the most popular approaches to generative modeling are probably GANs, variational autoencoders, and fully-visible belief nets.
 
-In this review, we will look at the original GAN and one of its variants, DCGAN.
+In this review, we will look at the original GAN.
 
 
 ## 1. Notation

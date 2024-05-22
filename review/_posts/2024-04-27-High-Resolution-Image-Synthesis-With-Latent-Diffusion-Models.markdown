@@ -42,7 +42,7 @@ The authors noted that "Interestingly, we find that LDMs trained in VQ-regulariz
 
 ## 1.2. Latent Diffusion Models
 
-### Diffusion Models
+### 1.2.1. Diffusion Models
 
 #### DDPM
 
@@ -85,8 +85,20 @@ Based on these characteristics, the authors demonstrated the consistency in thei
 we can consider a shorter subsequence process instead of original length $$T$$ without another trained model.
 Thus the generative process is acceleratable. (For details, refer to Appendix C.1 in DDPM paper.)
 
+#### Noise Schedule
 
-### Generative Modeling of Latent Representations
+Nichol et al (2021) [11] showed that the linear noise scheduler used in DDPM is too noisy, especially in the last quater of the diffusion process.
+For low resolution images such as $$64\times64$$ or $$32\times32$$, they demonstrated that the last 20% of diffusion process almost did not play a role in sample quality.
+Alternatively, they suggest a cosine scheduler, where $$\tilde{\alpha}_t$$ is quasi-linear in the middle of the process and non-rapid near $$t=0$$ and $$t=T$$.
+
+![figure1.3](/assets/img/review/Stable_Diffusion/other_papers/Improved_DDPM_schedule.png)
+figure1.3: Improved noise schedule
+{:.figure}
+
+There are scheduler classes in latent-diffusion/ldm/lr_scheduler.py of the source code.
+
+
+### 1.2.2. Generative Modeling of Latent Representations
 
 Through VAE, we can access to perceptually compressive latent space.
 It is more adequate to likelihood-based generative models than pixel space
@@ -95,12 +107,12 @@ Since we are going to deal with latent code $$ z_t = \mathcal{E}(x_t) $$ for the
 
 $$ L_{LDM} := \mathbb{E}_{\mathcal{E}(x), \epsilon \sim \mathcal{N}(0,1), t}[\| \epsilon - \epsilon_{\theta}(z_{t},t) \|_2^2]. $$
 
-The backbone model corresponds to $$\epsilon_{\theta}$$ is a time-conditional UNet [11].
+The backbone model $$\epsilon_{\theta}$$ is a time-conditional UNet [12].
 
 
-### Conditioning Mechanisms
+## 1.3. Conditioning Mechanisms
 
-Similar to other type of generative models [12, 13], DMs are capable of modeling conditional distribution of the form $$p(z|y)$$.
+Similar to other type of generative models [13, 14], DMs are capable of modeling conditional distribution of the form $$p(z|y)$$.
 This can be implemented with a conditional denoising autoencoder $$ \mathcal{E}_\theta(z_{t},t,y) $$ and diversified to txt2img, semantic maps or other img2img tasks.
 Such features are realized by applying cross-attention mechanism into UNet backbone.
 To deal with $$y$$ from various modalities, $$y$$ is projected to a representation $$ \tau_{\theta}(y) \in \mathbb{R}^{M \times d_r} $$ through domain specific encoder $$ \tau_{\theta} $$.
@@ -124,7 +136,7 @@ where $$\tau_{\theta}$$ & $$ \epsilon_{\theta} $$ are pairwise optimized.
 
 # 2. Python Code
 
-[Open source code of Stable Diffusion 1](https://github.com/CompVis/latent-diffusion)
+[Open source code of Stable Diffusion](https://github.com/CompVis/latent-diffusion)
 
 model config: txt2img-1p4B-eval.yaml for text2img task
 
@@ -311,9 +323,11 @@ figure2.7.1
 
 [10] Jiaming Song, Chenlin Meng, and Stefano Ermon. Denoising diffusion implicit models. In ICLR. OpenReview.net, 2021. 3, 5, 6, 20
 
-[11] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." Medical Image Computing and Computer-Assisted Intervention–MICCAI 2015: 18th International Conference, Munich, Germany, October 5-9, 2015, Proceedings, Part III 18. Springer International Publishing, 2015.
+[11] Nichol, Alexander Quinn, and Prafulla Dhariwal. "Improved denoising diffusion probabilistic models." International conference on machine learning. PMLR, 2021.
 
-[12] Mehdi Mirza and Simon Osindero. Conditional generative adversarial nets. CoRR, abs/1411.1784, 2014. 4
+[12] Ronneberger, Olaf, Philipp Fischer, and Thomas Brox. "U-net: Convolutional networks for biomedical image segmentation." Medical Image Computing and Computer-Assisted Intervention–MICCAI 2015: 18th International Conference, Munich, Germany, October 5-9, 2015, Proceedings, Part III 18. Springer International Publishing, 2015.
 
-[13] Kihyuk Sohn, Honglak Lee, and Xinchen Yan. Learning structured output representation using deep conditional generative models. In C. Cortes, N. Lawrence, D. Lee, M. Sugiyama, and R. Garnett, editors, Advances in Neural Information Processing Systems, volume 28. Curran Associates, Inc., 2015. 4
+[13] Mehdi Mirza and Simon Osindero. Conditional generative adversarial nets. CoRR, abs/1411.1784, 2014. 4
+
+[14] Kihyuk Sohn, Honglak Lee, and Xinchen Yan. Learning structured output representation using deep conditional generative models. In C. Cortes, N. Lawrence, D. Lee, M. Sugiyama, and R. Garnett, editors, Advances in Neural Information Processing Systems, volume 28. Curran Associates, Inc., 2015. 4
 
