@@ -54,6 +54,8 @@ menu:
     url:               /review/
   - title:             Summary
     url:               /summary/
+  - title:             Practice
+    url:               /practice/
   - title:             About
     url:               /about/
 
