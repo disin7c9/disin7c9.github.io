@@ -6,7 +6,6 @@ author: "Dongin Sin"
 date: 2024-11-21
 categories: practice
 tags: [fine-tuning, LLMs, AI, Unsloth, Continued Pre-Training, LoRA]
-image: /assets/img/practice/try_fine-tuning_LLMs/cute_lama_by_Flux.png
 ---
 
 
