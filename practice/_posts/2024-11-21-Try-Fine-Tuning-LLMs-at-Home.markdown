@@ -1,7 +1,12 @@
 ---
 layout: post
 title: "Try Fine-Tuning LLMs at Home"
-description: practice fine-tuning with LLaMA models.
+description: practice fine-tuning with LLaMA.
+author: "Dongin Sin"
+date: 2024-11-21
+categories: practice
+tags: [fine-tuning, LLMs, AI, Unsloth, Continued Pre-Training, LoRA]
+image: /assets/img/practice/try_fine-tuning_LLMs/cute_lama_by_Flux.png
 ---
 
 
@@ -172,7 +177,7 @@ The other main ideas distinct to ordinary LoRA fine-tuning are well explained in
  - Use rank stablized LoRA. [^6]
 
 
-Therefore I chose Unsloth and LLaMA models to try fine-tuning in this post.
+Therefore I chose Unsloth and LLaMA to try fine-tuning in this post.
 [Visit my github repo for the full version code.](https://github.com/disin7c9/LLaMA_3_fine-tuning_example)
 
 
