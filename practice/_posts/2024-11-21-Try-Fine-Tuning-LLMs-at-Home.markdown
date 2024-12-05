@@ -157,7 +157,7 @@ You can use web-based services such as OpenAI or Kaggle without a bunch of compl
 You can also do it **free** by downloading models to your computer with Hugging Face API.
 
 In case of Hugging Face,
-There are also some various packages and open-sources compatible to Hugging Face: PEFT, TRL, Unsloth, Qwen-VL etc., and each library is not exclusive to others.
+There are also some various packages and open-sources compatible to Hugging Face: PEFT, TRL, Unsloth, Qwen etc., and each library is not exclusive to others.
 
 [Unsloth](https://unsloth.ai/) is a novel open-source Python library for efficent fine-tuning of LLMs.
 The brothers, who developed the library, introduce that Unsloth is faster and more memory-efficient than the original implements of Hugging Face.
