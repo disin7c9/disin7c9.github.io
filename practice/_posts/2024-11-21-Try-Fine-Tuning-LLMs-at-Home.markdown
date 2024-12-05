@@ -43,6 +43,11 @@ What you need:
 5. Other informative posts
 6. References
 
+## Update 
+
+- 2024-12-06: Updated section 3 and 4
+
+&nbsp;
 
 # 1. What is fine-tuning? why do we need to do that?
 
@@ -746,6 +751,7 @@ https://kickitlikeshika.github.io/2024/07/24/how-to-fine-tune-llama-3-models-wit
 https://naakjii.tistory.com/138 (KOR)
 
 
+
 # References
 
 [^1]: Hu, Edward J., et al. "Lora: Low-rank adaptation of large language models." arXiv preprint arXiv:2106.09685 (2021).
@@ -763,6 +769,3 @@ https://naakjii.tistory.com/138 (KOR)
 [^7]: Shuttleworth, Reece, et al. "LoRA vs Full Fine-tuning: An Illusion of Equivalence." arXiv preprint arXiv:2410.21228 (2024).
 
 
-# Update
-
-- 2024-12-06: Updated section 3 and 4
