@@ -182,9 +182,9 @@ Therefore I chose Unsloth and LLaMA to try fine-tuning in this post.
 
 ## Fine-tuning code
 
-I slightly reformed the [original code](https://colab.research.google.com/drive/1tEd1FrOXWMnCU9UIvdYhs61tkxdMuKZu?usp=sharing#scrollTo=idAEIeSQ3xdS) on my purpose, but it is only for validation, inference, GGUF, saving and loading. The mainstream is equivalent to the original.
+I slightly reformed the [original code](https://colab.research.google.com/drive/1tEd1FrOXWMnCU9UIvdYhs61tkxdMuKZu?usp=sharing#scrollTo=idAEIeSQ3xdS) on my purpose, but it is just for validation, inference, saving and loading. The mainstream is almost equivalent to the original.
 
-With batch_size = 2, VRAM usage was less than 10GB, probably 7~9 during fine-tuning.
+When I tried batch_size = 2, VRAM usage was less than 10GB, probably 7~9 during fine-tuning.
 This reduced memory consuming was really beneficial.
 
 ### Build environment
@@ -211,6 +211,11 @@ from unsloth import (
     UnslothTrainingArguments,
 )
 from datasets import load_dataset
+
+# Hugging Face repository settings
+HF_write_token = "your_token"
+user_name = "your_id"
+seed = 42
 ~~~
 
 ### Set important hyperparameters
@@ -224,7 +229,7 @@ I used $$alpha = 2 \times rank$$ according to this [paper](https://arxiv.org/pdf
 max_seq_length = 2048 
 load_in_4bit = True
 BATCH_SIZE = 8
-rank = 64
+rank = 128
 alpha = rank*2
 ~~~
 
@@ -292,14 +297,10 @@ You can change the data to your own language or domain relevant dataset.
 ~~~py
 # Load and prepare dataset
 dataset = load_dataset("wikimedia/wikipedia", "20231101.ko", split = "train", )
-dataset = dataset.train_test_split(test_size=0.01, shuffle=True, seed=42) # Split dataset into train/validation sets
-train_set, val_set = dataset["train"], dataset["test"] 
 
 # Format dataset
-train_set = train_set.map(formatting_prompts_func, batched = True,)
+train_set = dataset.map(formatting_prompts_func, batched = True,)
 print(train_set[0:2])
-val_set = val_set.map(formatting_prompts_func, batched = True,)
-print(val_set[0:2])
 ~~~
 
 ### Set CPT trainer and run
@@ -313,13 +314,11 @@ trainer = UnslothTrainer(
     model=model,
     tokenizer=tokenizer,
     train_dataset=train_set,
-    eval_dataset=val_set,
     dataset_text_field="text",
     max_seq_length=max_seq_length,
 
     args = UnslothTrainingArguments(
         per_device_train_batch_size=BATCH_SIZE,  # training batch size
-        per_device_eval_batch_size=BATCH_SIZE,  # validation batch size
         gradient_accumulation_steps = 2, # by using gradient accum, we updating weights every: batch_size * gradient_accum_steps
 
         # Use warmup_ratio and num_train_epochs for longer runs!
@@ -332,17 +331,10 @@ trainer = UnslothTrainer(
 
         # validation and save
         logging_steps=100,
-        eval_strategy='steps',
-        eval_steps=500,
         save_strategy='steps',
-        save_steps=1000,
-        save_total_limit=5,
+        save_steps=5000,
+        save_total_limit=3,
         save_safetensors=True,
-        
-        # # callback
-        # load_best_model_at_end=True, # this option is only available when eval_strategy == save_strategy
-        # metric_for_best_model="eval_loss",
-        # greater_is_better=False,
 
         # dtype
         fp16 = not is_bfloat16_supported(),
@@ -388,31 +380,18 @@ tokenizer.push_to_hub(
 
 ### Load model for Instruction Fine-Tuning (IFT)
 
+For flexible utilization of CPT only LoRA, I just halted here to save the CPT checkpoints.
+However, since seamless resumption from CPT to IFT is not supported, we need to try either (1) ordinary fine-tuning without embedding learning or (2) making another LoRA adapter same as the above CPT process.
+
+I'll choose the 1st way with reference to the official document: https://docs.unsloth.ai/basics/continued-pretraining
+
 ~~~py
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name=base_model_path,
+    model_name=CPT_path,
     max_seq_length=max_seq_length,
     dtype=torch.bfloat16,
     load_in_4bit=load_in_4bit,
 )
-
-# Configure LoRA
-model = FastLanguageModel.get_peft_model(
-    model,
-    r = rank, # LoRA rank
-    target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                      "gate_proj", "up_proj", "down_proj",
-                      "embed_tokens", "lm_head",],
-    lora_alpha = alpha,
-    lora_dropout = 0.0, # Supports any, but = 0 is optimized
-    bias = "none",    # Supports any, but = "none" is optimized
-    use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
-    random_state = seed,
-    use_rslora = True,   # Unsloth supports rank stabilized LoRA
-    loftq_config = None, # And LoftQ
-)
-
-model.load_adapter(CPT_path, adapter_name="CPT")
 
 model.print_trainable_parameters()
 ~~~
@@ -446,7 +425,7 @@ Again, choose your own task-specific data.
 
 ~~~py
 alpaca_dataset = load_dataset("FreedomIntelligence/alpaca-gpt4-korean", split = "train")
-alpaca_dataset = alpaca_dataset.train_test_split(test_size=0.2, shuffle=True, seed=42) # Split dataset into train/validation sets
+alpaca_dataset = alpaca_dataset.train_test_split(test_size=0.1, shuffle=True, seed=seed) # Split dataset into train/validation sets
 alpaca_train_set, alpaca_val_set = alpaca_dataset["train"], alpaca_dataset["test"] 
 
 alpaca_train_set = alpaca_train_set.map(formatting_prompts_func, batched = True,)
@@ -473,18 +452,18 @@ trainer = UnslothTrainer(
 
         # Use warmup_ratio and num_train_epochs for longer runs!
         warmup_ratio = 0.1,
-        num_train_epochs = 2,
+        num_train_epochs = 3,
 
         # Select a 2 to 10x smaller learning rate for the embedding matrices!
         learning_rate = 5e-5,
-        embedding_learning_rate = 1e-5,
+        embedding_learning_rate = 1e-5, # dummy option now
 
         # validation and save
-        logging_steps=100,
+        logging_steps=10,
         eval_strategy='steps',
-        eval_steps=500,
+        eval_steps=100,
         save_strategy='steps',
-        save_steps=1000,
+        save_steps=100,
         save_total_limit=10,
         save_safetensors=True,
         
@@ -492,7 +471,6 @@ trainer = UnslothTrainer(
         # load_best_model_at_end=True, # this option is only available when eval_strategy == save_strategy
         # metric_for_best_model="eval_loss",
         # greater_is_better=False,
-
 
         # dtype
         fp16 = not is_bfloat16_supported(),
@@ -514,7 +492,7 @@ trainer_stats = unsloth_train(trainer)
 
 ~~~py
 # Save trained model locally and to Hugging Face Hub as normal and quantized form
-repo_name = "IFT_LoRA_Llama-3.1-8B-Instruct-bnb-4bit_wikipedia-ko_alpaca-gpt4-ko"
+repo_name = "llama-3.1-8B_lora-IFT_CPT_alpaca-gpt4-ko"
 IFT_path = f"{user_name}/{repo_name}"
 
 # Local
@@ -536,7 +514,7 @@ tokenizer.push_to_hub(
     )
 
 # GGUF / llama.cpp Conversion
-repo_name = "IFT_LoRA_Llama-3.1-8B-Instruct-bnb-4bit_wikipedia-ko_alpaca-gpt4-ko-GGUF"
+repo_name = "llama-3.1-8B_lora-IFT_CPT_alpaca-gpt4-ko_GGUF"
 IFT_GGUF_path = f"{user_name}/{repo_name}"
 
 quantization_method = "q8_0" # or "f16" or "q4_k_m"
@@ -548,23 +526,63 @@ model.push_to_hub_gguf(IFT_GGUF_path, tokenizer, save_method = "lora", quantizat
 
 ## Loss graphs
 
-Since training CPT+IFT definitely take too much time even using Unsloth, 
-it's burdensome for me to exhaust so much time and resources on such a practice.
-So I skipped CPT and just tried IFT to LLaMA Instruct models 3.2-1B, 3.2-3B and 3.1-8B.
+Before starting fine-tuning, I got a curiosity about how actually model scale and CPT affect the model performance. So I tried 2 simple experiments:
 
-I lost log data of 3.2-1B, so here is the comparison between 3.2-3B and 3.1-8B.
+1. Just trying IFT to LLaMA Instruct models 3.2-1B, 3.2-3B and 3.1-8B
+2. An ablation test comparing IFT vs. CPT+IFT
 
-![figure5](/assets/img/practice/try_fine-tuning_LLMs/Llama-3-loss.jpg)
-figure5: fine-tuning loss comparision between 3.2-3B and 3.1-8B
+### IFT 3.2-1B, 3.2-3B and 3.1-8B
+
+```
+# configs
+rank = 16
+epoch = 3
+```
+
+![figure5](/assets/img/practice/try_fine-tuning_LLMs/test1-scale.jpg)
+figure5: fine-tuning loss comparision between IFT 3.2-3B and IFT 3.1-8B (I lost the log data of 3.2-1B.)
 {:.figure}
 
+
+
 It seems like that the loss values are decreasing well, and trivially, the larger is the better. 
-But there are problems.
+But there are some considerations.
 
-1. It is doubtful that overfitting has occured after epoch 2.
+1. The  train-val loss gap is broaden at the beginning of epoch 3.
 
-2. The loss values before the end of 2nd epoch are not sufficiently small enough when compared to the Unsloth official examples of English text data 
+2. The loss values before the end of 2nd epoch are not sufficiently small enough when compared to the Unsloth official examples about English text data 
 [1](https://colab.research.google.com/drive/1z0XJU2FCzDC8oyXa2Nd4jCxylRMI-o0-?usp=sharing#scrollTo=2ejIt2xSNKKp) and [2](https://colab.research.google.com/drive/1Ys44kVvmeZtnICzWz0xgpRnrIOjZAuxp?usp=sharing#scrollTo=QmUBVEnvCDJv). Such examples even not trained in 1 full epoch, but only on a few steps.
+
+(In this experiment, The rank number has no meaning, I just set up a wrong number.) 
+
+### IFT vs. CPT+IFT
+
+```
+# configs
+rank = 128
+epoch = 2
+```
+
+![figure6](/assets/img/practice/try_fine-tuning_LLMs/CPT+IFT_LLaMA-3.1-8B_3epochs.png)
+figure6: CPT+IFT 3.1-8B 
+{:.figure}
+
+With the bigger rank, it is doubtful that overfitting has occured after epoch 2.
+Let us load the models trained up to epoch 2 and compare them.
+
+
+![figure7](/assets/img/practice/try_fine-tuning_LLMs/test2-ablation.jpg)
+figure7: fine-tuning loss comparision between IFT 3.2-3B and CPT+IFT 3.1-8B
+{:.figure}
+
+Despite the validation loss of the CPT+IFT is slightly worse, but the loss drop is very sharp right after epoch 1! 
+
+Another interesting observation is that the CPT model exhibits a kind of phase shift at the initial learning step, suggesting it may struggling with optimization in this early stage.
+
+
+![figure8](/assets/img/practice/try_fine-tuning_LLMs/CPT_LLaMA-3.1-8B.png)
+figure8: CPT 3.1-8B
+{:.figure}
 
 
 ## Inference test
@@ -582,72 +600,38 @@ Q3. 지구를 광범위하게 설명하세요.
 Q4. 한국음악은 어떤가요?
 (What is Korean music like?)
 
-### 3.2-1B
+### IFT only
+
 ```
 A1.
 ### Response:
-The Eiffel Tower.<|eot_id|>
+A famous tall tower in Paris is the Eiffel Tower, which stands at a height of 324 meters (1,063 feet).<|eot_id|>
 
 A2.
 ### 응답:
-  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1594, 2584, 4181, 6765,
+ 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040, 1346269, 2178309, 3524578, 5772863, 9275240, 15050005, 24414062, 39420467, 632
 
 A3.
 ### 응답:
-  - 지구 : "광범위"
-  - 광범위 : "광범위"
-  - 광범위 : "광범위"
-  - 광범위 : "광범위"<|eot_id|>
+ 지구는 태양계에서 가장 큰 천체이며, 지름은 약 12,742 킬로미터 (7,918 마일)입니다. 지구는 지름 약 30,000 킬로미터 (18,640 마일)인 태양계의 가장 바깥쪽 궤도에 위치한 지름 약 12,742 킬로미터 (7,918 마일)의 궤도에 위치합니다. 지구는 지름 약 12,742 킬로미터 (7,918 마일)입니다. 지구는
 
 A4.
 ### 응답:
-  - "한국음악은 어떤가요?"
-  - "한국음악은 음악으로 말하는 것"
-  - "한국음악은 한국의 음악"
-  - "한국음악은 한국의 문화"
-  - "한국음악은 한국의 문화를 표현하는 것"
-
-### 예시:
-- "한국음악은 어떤가요?"
-- "한국음악은 음악으로 말하는 것"
-- "한국음악은 한국의 음악"
-- "한국음악은 한국의 문화"
-- "한국음악은 한국의 문화를 표현하는 것"
-
-###
+ AI로써, 나는 개인적인 취향이나 감정을 가지지 않습니다. 그러나 한국 음악은 전통 음악부터 현대 음악까지 다양하며, 다양한 장르와 스타일로 이루어져 있습니다. 전통 음악은 가라오케, 판소리, 그리고 사물놀이와 같은 다양한 종류로 이루어져 있으며, 현대 음악은 K-pop, K-rock, 그리고 K-indie와 같은 장르로 이루어져 있습니다. 한국 음악은 보통 감정과 멜로디의 강조로 특징지어지며, 보컬, 악기, 그리고
 ```
 
-### 3.2-3B
+### CPT
+
 ```
 A1.
 ### Response:
-The Eiffel Tower is a famous tall tower located in Paris, France. It was built for the 1889 World's Fair and stands 324 meters (1,063 feet) tall. It has become an iconic symbol of the city and one of the most recognizable landmarks in the world.<|eot_id|>
-
-A2.
-### 응답:
-  1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 
-
-A3.
-### 응답:
-  지구는 우리โลก입니다. 지구는 지구의 4개의 대륙으로 나뉘어 있습니다. 그 대륙은 아시아, 유럽, 아프리카, 북아메리카, 남아메리카, 오스트레일리아, antarctica, 남極, 인도洋, 태평양, 북대서양, 남대서양, 남서대서양, 남서대서양, 남서대서양, 남서대서양, 남서대서양, 남서대서양, 남서대서양, 남서대
-
-A4.
-### 응답:
-  한국음악은 한국에서 시작된 음악입니다. 한국음악은 전통 음악과 현대 음악으로 나눌 수 있습니다. 전통 음악은 한국의 역사와 문화를 반영하는 음악입니다. 한국의 전통 음악은 주로 가요, 단요, 지장, 보가요 등으로 구성됩니다. 현대 음악은 한국의 현대 음악을 구성하는 음악입니다. 한국의 현대 음악은 주로 pop, rock, hip-hop, R&B, electronic, jazz 등으로 구성됩니다. 한국음악은 한국의 음악의 다양한 장르로 나눌 수 있으며, 한국의 음악
-
-```
-
-### 3.1-8B
-```
-A1.
-### Response:
-The Eiffel Tower is a famous tall tower in Paris. It was built for the 1889 World's Fair. The tower was the tallest structure in the world at the time, standing at 324 meters. It has become an iconic symbol of Paris and one of the most recognizable landmarks globally. Visitors can ascend to the top for panoramic views of the city. The Eiffel Tower is a must-visit attraction for anyone traveling to Paris.
+The Eiffel Tower is a famous tall tower in Paris. It was built for the 1889 World's Fair. The tower was the tallest structure in the world at the time, standing at 324 meters. It has become an iconic symbol of Paris and one of the most recognizable landmarks globally. Visitors can ascend to the top for panoramic views of the city. The Eiffel Tower is a must-visit attraction for anyone traveling to Paris. 
 
 (Note: The response is written in a neutral, informative tone, suitable for a general audience.) <|eot_id|>
 
 A2.
 ### 응답:
-  ```python
+ ```python
 def 피보나치(n):
 if n <= 0:
     return "피보나치 수열은 0 이상의 정수만 지원합니다."
@@ -656,43 +640,85 @@ elif n == 1:
 elif n == 2:
     return 1
 else:
+    fib_sequence = [1, 1]
+    while len(fib_sequence) < n:
+        fib_sequence.append(fib_sequence[-1] + fib_sequence[-2])
+    return fib_sequence[-1]
+
+# 테스트
+print(피보나치(10))  # 34
+```     ```
 
 A3.
 ### 응답:
-  지구는 태양계에서 가장 큰 천체입니다. 지구는 달과 함께 태양을 공전하고 있습니다. 지구는 대기와 물로 구성된 생명체가 살아가는 세계입니다. 지구는 지구력과 지구질을 가지고 있으며 지구력은 지구가 지구질을 가지고 있는지에 대한 질문입니다. 지구질은 지구의 물질을 지구력으로부터 분리하는 것입니다. 지구력은 지구의 물질을 지구질로부터 분리하는 것입니다. 지구는 지구력과 지구질
+  지구는 지구를 구성하는 천체의 한 부분으로, 지구는 태양계에서 3 번째로 큰 행성입니다. 지구는 지구의 위성인 달을 포함한 2 개의 자연적인 위성으로 구성되며, 지구의 궤도는 365.25 일간의 태양 주기와 일치합니다. 지구는 24 시간의 지구 주기와 일치합니다. 지구의 대기 중에는 이산화탄소, 메탄, 물 증기, 오존, 그리고 수소 등 다양한 기체가 존재합니다. 지구는 지구의 바다, 대륙, 산맥, 그리고 산 등 다양한 지형을 포함하고 있습니다. 지구의 생명체는 지구의 생물학적 다양성으로 인해 다양한 종을 포함하고 있습니다. 지구는 지구의 자체적인 자전을 가지며, 지구의 자전은 지구의 회전을 발생시킵니다. 지구는 지구의 자전과 지구의 회전에 의해 영향을 받습니다. 지구는 지구의 지구 자기장으로 인해 지구의 자기장을 발생시
+<|begin_of_text|>다음은 작업을 설명하는 명령입니다. 요청을 적절하게 완료하는 응답을 작성하세요.
 
 A4.
 ### 응답:
-  - 한국음악은 다양한 장르와 스타일로 유명합니다.
-  - 트로트, 발레, 클래식, 뮤지컬, 팝, 힙합 등이 있습니다.
-  - 한국음악은 다양한 문화와 역사적 유산을 반영합니다.
-  - 한국음악은 세계적으로도 인기가 있습니다. - 한국음악은 다양한 장르와 스타일로 유명합니다.
-  - 트로트, 발레, 클래식, 뮤지컬, 팝, 힙합 등이 있습니다.
-  - 한국
+  - 한국음악은 다양한 장르와 스타일이 있습니다. 
+  - 전통음악, 현대음악, 댄스음악 등이 있습니다.
+  - 한국음악은 세계적으로도 인기가 있습니다.
+  - 한국음악은 한국의 문화와 역사와 깊은 관련이 있습니다. 
+  - 한국음악은 한국인의 감성과 정서를 표현하는 데 중요한 역할을 합니다. 
+  - 한국음악은 한국의 전통과 현대를 연결하는 역할을 합니다. 
+  - 한국음악은 한국의 독자적인 음악적 특징을 가지고 있습니다. 
+  - 한국음악은 한국의 문화와 역사와 깊은 관련이 있습니다. 
+
+### 비고:
+한국음악에 대한 일반적인 정보와 한국음악의 특징을 포함한 정보를 제공합니다. 
+한국음악에 대한 이해를 돕기 위해 다양한 장르와 스타일, 인기가 있는 정보, 문화와 역사와의 관련성, 감성과 정서 표현, 전통과 현대 연결, 독자적인 음악적 특징을 포함합니다. 
+한국음악에 대한 정보를 제공하는 데
 ```
 
-The English responses are not bad, but the models' Korean ability and common sense are poor, especially 1B model cannot understands and responds in Korean. 
 
-Here are the model repos: [lora](https://huggingface.co/disin7c9/LoRA_Llama-3.1-8B-Instruct-bnb-4bit_alpaca-gpt4-ko) and [gguf](https://huggingface.co/disin7c9/LoRA_Llama-3.1-8B-Instruct-bnb-4bit_alpaca-gpt4-ko-GGUF).
+### CPT + IFT
+
+```
+A1.
+### Response:
+The famous tall tower in Paris is the Eiffel Tower.<|eot_id|>
+
+A2.
+### 응답:
+  피보나치 수열은 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17713, 28721, 46142, 75493, 123463, 199584, 321649, 530213, 864497, 1404957, 2277211, 3712816, 6078431, 9874943, 16049817, 25962571, 41840789, 66984423, 109416727, 177573939, 287489173, 461209281, 754896169, 123473682, 199479937, 321649, 5, 10, 15, 24, 39, 64, 125, 209, 339, 548, 885, 1443, 2368, 3891, 6356, 10281, 16541, 27072,
+
+A3.
+    ### 응답:
+     지구는 태양 주위에서 공전하는 유일무이한 행성입니다. 지구는 지름 약 12,742km인 구형의 행성입니다. 지구는 대부분이 물로 이루어져 있으며, 그 중 70% 이상이 바다에서 발견됩니다. 지구는 그 크기와 중력 때문에 다른 행성과 구별됩니다.
+
+지구는 태양으로부터 평균 약 365일의 시간이 걸려서 공전하며, 그 궤도는 타원형입니다. 지구의 회전은 평균 24시간이 소요되며, 지구의 한 바퀴는 거의 27.3일이 소요됩니다.
+
+지구는 생명을 지원하는 데 필요한 모든 것을 제공하는 지구 대기권으로 구성됩니다. 지구 대기권은 온도, 압력 및 기타 조건을 규제하는 역할을 합니다. 지구 대기권은 대기, 중간권 및 열권으로 구성됩니다. 대기는 대부분 질소와 산소로 이루어져 있으며, 중간권은 지구의 자기장을 포함하며, 열권은 지구의 대기를 태양으로부터 보호합니다.
+
+A4.
+### 응답:
+  한국음악은 다양한 스타일과 장르를 포괄하는 것으로, 전통적인 음악, 팝 음악, 랩 음악, 재즈 음악, 국악 등이 포함됩니다. 전통 음악은 피아노, 기타, 하프, 드럼 등으로 연주되는 서양악기와 함께 전통적인 한국악기인 가야금, 거문고, 피아노, 타악기 등이 함께하는 것으로 이루어져 있습니다. 팝 음악은 현대적인 사운드를 사용하며, 가사와 멜로디가 주로 한국어로 이루어져 있습니다. 랩 음악은 한국어로 된 가사와 한국 음악의 리듬에 맞춘 비트가 특징입니다. 재즈 음악은 한국어 가사와 함께 서양악기와 한국 전통 악기가 함께하는 것으로 이루어져 있습니다. 국악은 전통 한국 음악으로, 다양한 악기와 노래 스타일이 포함됩니다. 전반적으로, 한국음악은 그 나라의 풍부한 문화와 역사적 유산을 반영하는 다양한 스타일과 장르로 구성되어 있습니다.<|eot_id|>
+```
 
 
 # 4. Conclusion
 
-Well, it was predictable result because not only CPT is skipped but also they are lightweight models.
+CPT+IFT LoRA is not outstanding, but slightly better than the others in common sense and Korean communication skill. Also we validated loss data and tested model inference.
 
-Also considering that many institutes are training more huge models with better architecture, data, loss functions and techniques at this very moment,
+However, those evaluations are not sufficient due to the ambiguous and complex characteristics of languages.
+
+Besides, considering that many institutes are training more huge models with better architecture, data, loss functions and techniques at this very moment,
 it is definitely too greedy that to build a perfect model with only this resources I just used.
 
-However the notable points from this practice are:
+Though the notable points from this practice are:
 
 1. **Now we know how to fine-tune LLMs.**
 2. **We understood some important mechanisms and options in fine-tuning.**
 3. **We can fine-tune LLMs more faster and memory-efficiently.**
 
+In next time, I will cover multimodal LLM fine-tuning or LLMs evaluation methods relevant to accuracy, F1 score, perplexity, BLEU, and ROGUE.
+
+Here are the model repos: [IFT LoRA](https://huggingface.co/disin7c9/llama-3.1-8B_lora-simple-IFT_alpaca-gpt4-kor), [CPT LoRA](https://huggingface.co/disin7c9/CPT_LoRA_Llama-3.1-8B-Instruct-bnb-4bit_wikipedia-ko), [CPT+IFT LoRA](https://huggingface.co/disin7c9/llama-3.1-8B_lora-IFT-CPT_alpaca-gpt4-ko) and [its gguf](https://huggingface.co/disin7c9/llama-3.1-8B_lora-IFT-CPT_alpaca-gpt4-ko_GGUF).
 
 # 5. Other informative posts
 
-The followings are blog posts what I had seen during studying.
+The followings are blog posts what I had seen during study.
 They are categorized into several types.
 
 ### Unsloth
@@ -735,3 +761,8 @@ https://naakjii.tistory.com/138 (KOR)
 [^6]: Kalajdzievski, Damjan. "A rank stabilization scaling factor for fine-tuning with lora." arXiv preprint arXiv:2312.03732 (2023).
 
 [^7]: Shuttleworth, Reece, et al. "LoRA vs Full Fine-tuning: An Illusion of Equivalence." arXiv preprint arXiv:2410.21228 (2024).
+
+
+# Update
+
+- 2024-12-06: Updated section 3 and 4
