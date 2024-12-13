@@ -577,7 +577,7 @@ Let us load the models trained up to epoch 2 and compare them.
 
 
 ![figure7](/assets/img/practice/try_fine-tuning_LLMs/test2-ablation.jpg)
-figure7: fine-tuning loss comparision between IFT 3.2-3B and CPT+IFT 3.1-8B
+figure7: fine-tuning loss comparision between IFT 3.1-8B and CPT+IFT 3.1-8B
 {:.figure}
 
 Despite the validation loss of the CPT+IFT is slightly worse, but the loss drop is very sharp right after epoch 1! 
