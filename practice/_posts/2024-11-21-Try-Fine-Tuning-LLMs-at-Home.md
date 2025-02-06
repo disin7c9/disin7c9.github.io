@@ -87,12 +87,12 @@ would be helpful.
 figure2: LoRA mechanism (source: *"Lora: Low-rank adaptation of large language models. (2021)"*)
 {:.figure}
 
-Fine-tuning meant that training all the parameters to another dataset after pre-training.
+Fine-tuning means training a model to another dataset for a downstream task after pre-training.
 However *“Scaling Laws for Neural Language Models (2020)”* found **the scaling law** that the model scale is the most important feature in performance than others like data amount, training steps, and model shape.
 So it is hard to train all the weights of LLMs because the sizes are usually bigger than 1 billion.
 
-In 2021, Hu, Edward J., et al. introduced LoRA technique and it made an impact. [^1] 
-This technique freezes the original parameters of a LLM and adds weight matrices as adapter.
+In 2021, Hu, Edward J., et al. introduced LoRA technique. [^1] 
+This technique freezes the original parameters of a LLM and adds weight matrices as adapter. So this is a kind of **Parameter-Efficient Fine-tuning**.
 In detail, for an original weights matrix $$W$$, LoRA method attachs additional trainable matrix $$\Delta W$$ with **rank** $$r$$ and **scaling factor** $$\alpha$$ like 
 
 $$
@@ -121,8 +121,8 @@ The benefits of LoRA are came from:
 figure3: Quantization method in *LLM.int8() paper*
 {:.figure}
 
-Most of LLMs parameters are saved as 'standard single-precision floating-point form' a.k.a float32.
-Each number expressed in the float32 data type requires 32 bit of information quantities.
+Many DL model parameters are stored as one of following formats: 'standard single-precision floating-point form', 'standard half-precision floating-point form', and 'brain floating-point form' a.k.a fp32, fp16, and bf16 respectively.
+For example, each number expressed in the float32 data type requires 32 bit of information quantities.
 However, because of the large scale of language models, this causes computationally intensive training and slow inference.
 I don't know the latest research about quantization methods, but the concept of quantization is similar to clustering.
 Given parametric data, we group them into several points by mapping floating-point values to discrete levels (e.g., integers).
